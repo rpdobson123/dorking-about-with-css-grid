@@ -1,0 +1,79 @@
+<head>
+<title>News Booze</title>
+<style>
+	a {
+	    color: initial;
+	    cursor: pointer;
+	    text-decoration: none;
+	}
+	#container {
+		display: grid;
+    		grid-template-columns: 30% 30% 30%;
+		grid-template-rows: auto;
+	}
+	img {
+		width: 100%;
+		padding-bottom: 12px;
+		margin-bottom: 12px;
+		max-height: auto;
+	}
+	span {
+	    max-width: 0px;
+	    white-space: nowrap;
+	    display: block;
+	    overflow: hidden;
+	}
+	i {
+		font-style: initial;
+	}
+	p {
+		min-height: 300px;
+		border-top: 1px solid black;
+		background-color: #ccc;
+		padding: 18px;
+		margin: 6px;
+		border-radius: 6px;
+		transition: border 200ms, background-color 200ms, color 200ms;
+		border: 2px solid transparent;
+	}
+	p:hover span {
+		position: relative;
+		max-width: unset;
+		font-size: 24px;
+		top: -50%;
+		margin-left: 30%;
+		text-shadow: 2px 2px black;
+	}
+	p:hover {
+		border: 2px solid teal;
+		background-color: darkcyan;
+		color: white;
+	}
+	.cat1 {
+          background-color: #6cc;
+        }
+</style>
+<script>
+
+let API_KEY = 'PUT_YOUR_API_KEY_FROM_NEWS_API_HERE'
+let url = 'https://newsapi.org/v2/top-headlines?' +
+          'country=us&' +
+          'apiKey=API_KEY';
+let req = new Request(url);
+fetch(req)
+    .then(async response => {
+	const articles = (await response.json()).articles;
+	if (articles) {
+	        articles.map(article => {
+		  const img = article.urlToImage ? `<img src="${article.urlToImage}"/>` : '<b>Click To View Article</b>';
+	          return `<p><a href="${article.url}">${img}</a><i><b>${article.title ? article.title + " - " : ''}</b><br/> ${article.description || ''} (<b>${article.author || 'Uncredited'}</b> - ${article.source.name})</i></p>`;
+	        }).forEach(result => document.getElementById('container').innerHTML += result)
+	} else { document.getElementById('container').innerHTML = "<h2>Error fetching articles - Add your API Key first</h2>"; }
+    })
+</script>
+</head>
+<html>
+	<body>
+		<div id="container"></div>
+	</body>
+</html>
